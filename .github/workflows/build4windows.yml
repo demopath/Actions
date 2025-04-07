@@ -1,0 +1,42 @@
+name: 编译程序 windows 环境
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository_url:
+        description: '仓库地址(用户/仓库)'
+        required: true
+        type: string
+        default: 'TinyCC/tinycc' 
+      build_cmd:
+        description: '编译命令'
+        required: true
+        type: string
+        default: 'cd win32 && build-tcc.bat' 
+      upload_file:
+        description: '上传文件'
+        required: true
+        type: string
+        default: 'win32' 
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: checkout 项目代码
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.inputs.repository_url }}
+          path: source_code 
+
+      - name: 执行编译命令
+        shell: cmd
+        run: |
+          cd source_code
+          ${{ github.event.inputs.build_cmd }}
+
+      - name: 上传文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            source_code/${{ github.event.inputs.upload_file }}
