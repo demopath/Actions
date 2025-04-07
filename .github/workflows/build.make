@@ -1,0 +1,42 @@
+name: Build GNU Make
+
+on:
+  workflow_dispatch:
+    inputs:
+      make_version:
+        description: 'GNU Make version (e.g. make-4.4.1)'
+        required: true
+        default: 'make-4.4.1'
+        type: string
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download GNU Make source
+        shell: powershell
+        run: |
+          Invoke-WebRequest -Uri "https://ftp.gnu.org/gnu/make/${{ inputs.make_version }}.tar.gz" -OutFile "${{ inputs.make_version }}.tar.gz"
+          tar -xf ${{ inputs.make_version }}.tar.gz
+
+      - name: Tree
+        working-directory: ${{ inputs.make_version }}
+        run: tree /f
+
+      - name: Build GNU Make
+        shell: cmd
+        working-directory: ${{ inputs.make_version }}
+        run: |
+          build_w32.bat
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.make_version }}
+          path: |
+            ${{ inputs.make_version }}/**/*.exe
+          if-no-files-found: error
