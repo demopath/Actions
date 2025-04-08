@@ -1,5 +1,13 @@
 name: 在 windwos 环境编译仓库
 
+# TinyCC/tinycc
+# cd win32 && build-tcc.bat
+# win32
+
+# lua/lua
+# gcc -O2 -std=c99 -o lua onelua.c -lm
+# lua.exe
+
 on:
   workflow_dispatch:
     inputs:

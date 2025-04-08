@@ -1,4 +1,4 @@
-name: Build GNU Make
+name: 从 gnu.org 源码编译 make
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Download GNU Make source
         shell: powershell
         run: |
-          Invoke-WebRequest -Uri "https://ftp.gnu.org/gnu/make/${{ inputs.make_version }}.tar.gz" -OutFile "${{ inputs.make_version }}.tar.gz"
+          curl -o "${{ inputs.make_version }}.tar.gz" "https://ftp.gnu.org/gnu/make/${{ inputs.make_version }}.tar.gz"
           tar -xf ${{ inputs.make_version }}.tar.gz
 
       - name: Tree
