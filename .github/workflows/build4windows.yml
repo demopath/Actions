@@ -1,4 +1,4 @@
-name: 编译程序 windows 环境
+name: 在 windwos 环境编译仓库
 
 on:
   workflow_dispatch:
