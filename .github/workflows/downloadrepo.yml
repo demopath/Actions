@@ -26,7 +26,6 @@ jobs:
       with:
         repository: ${{ github.event.inputs.target_repository }}
         ref: ${{ github.event.inputs.ref }}
-        token: ${{ secrets.REPO_ACCESS_TOKEN }} # 如果目标仓库是私有的，需要提供 PAT
         sparse-checkout-paths: ${{ github.event.inputs.folder_path }}
 
     - name: 上传
