@@ -31,7 +31,4 @@ jobs:
     - name: 上传
       uses: actions/upload-artifact@v4
       with:
-        # 移除复杂的字符串替换，只使用简单的变量
-        name: downloaded-folder-${{ github.event.inputs.target_repository }}-${{ github.event.inputs.folder_path }}
         path: ${{ github.event.inputs.folder_path }}
-        retention-days: 5 # 设置 artifact 的保留天数，默认为 90 天
