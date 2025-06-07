@@ -1,4 +1,4 @@
-name: Download Specific Folder from GitHub Repo (Simplified)
+name: github按文件夹下载
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository (Sparse Checkout)
+    - name: 下载
       uses: actions/checkout@v4
       with:
         repository: ${{ github.event.inputs.target_repository }}
@@ -29,7 +29,7 @@ jobs:
         token: ${{ secrets.REPO_ACCESS_TOKEN }} # 如果目标仓库是私有的，需要提供 PAT
         sparse-checkout-paths: ${{ github.event.inputs.folder_path }}
 
-    - name: Archive downloaded folder as Artifact
+    - name: 上传
       uses: actions/upload-artifact@v4
       with:
         name: downloaded-folder-${{ github.event.inputs.target_repository | replace('/', '-') }}-${{ github.event.inputs.folder_path | replace('/', '-') }}
