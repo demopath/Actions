@@ -1,5 +1,4 @@
-name: github按文件夹下载
-
+name: github 按文件夹下载
 on:
   workflow_dispatch:
     inputs:
@@ -11,23 +10,17 @@ on:
         description: '目标文件夹在仓库中的路径 (e.g., src)'
         required: true
         default: ''
-      ref:
-        description: '目标仓库的分支/标签/commit SHA (可选，默认为仓库默认分支)'
-        required: false
-        default: ''
 
 jobs:
   download-folder:
     runs-on: ubuntu-latest
-
     steps:
     - name: 下载
       uses: actions/checkout@v4
       with:
         repository: ${{ github.event.inputs.target_repository }}
-        ref: ${{ github.event.inputs.ref }}
-        sparse-checkout-paths: ${{ github.event.inputs.folder_path }}
-
+        sparse-checkout: ${{ github.event.inputs.folder_path }} 
+        
     - name: 上传
       uses: actions/upload-artifact@v4
       with:
