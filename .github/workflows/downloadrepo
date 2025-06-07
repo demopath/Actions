@@ -1,0 +1,37 @@
+name: Download Specific Folder from GitHub Repo (Simplified)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_repository:
+        description: '目标仓库，格式为 owner/repo (e.g., demopath/test)'
+        required: true
+        default: ''
+      folder_path:
+        description: '目标文件夹在仓库中的路径 (e.g., src/test)'
+        required: true
+        default: ''
+      ref:
+        description: '目标仓库的分支/标签/commit SHA (可选，默认为仓库默认分支)'
+        required: false
+        default: ''
+
+jobs:
+  download-folder:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository (Sparse Checkout)
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.event.inputs.target_repository }}
+        ref: ${{ github.event.inputs.ref }}
+        token: ${{ secrets.REPO_ACCESS_TOKEN }} # 如果目标仓库是私有的，需要提供 PAT
+        sparse-checkout-paths: ${{ github.event.inputs.folder_path }}
+
+    - name: Archive downloaded folder as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: downloaded-folder-${{ github.event.inputs.target_repository | replace('/', '-') }}-${{ github.event.inputs.folder_path | replace('/', '-') }}
+        path: ${{ github.event.inputs.folder_path }}
+        retention-days: 5 # 设置 artifact 的保留天数，默认为 90 天
