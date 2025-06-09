@@ -23,20 +23,20 @@ jobs:
           curl -o "${{ inputs.make_version }}.tar.gz" "https://ftp.gnu.org/gnu/make/${{ inputs.make_version }}.tar.gz"
           tar -xf ${{ inputs.make_version }}.tar.gz
 
-      - name: Tree
-        working-directory: ${{ inputs.make_version }}
-        run: tree /f
-
       - name: Build GNU Make
         shell: cmd
         working-directory: ${{ inputs.make_version }}
         run: |
           build_w32.bat
+
+      - name: Tree
+        working-directory: ${{ inputs.make_version }}
+        run: tree /f
       
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.make_version }}
           path: |
-            ${{ inputs.make_version }}/**/*.exe
+            make*/**/*.exe
           if-no-files-found: error
