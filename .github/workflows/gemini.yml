@@ -1,0 +1,46 @@
+name: Build Remote Gemini Project
+
+on:
+  workflow_dispatch: # 支持手动点击按钮触发
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # 1. 克隆对方的仓库到本地目录 'gemini-src'
+      - name: Checkout remote repository
+        uses: actions/checkout@v4
+        with:
+          repository: tgjones/gemini
+          ref: master
+          path: gemini-src
+
+      # 2. 安装 MSBuild 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # 3. 安装 NuGet
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+
+      # 4. 还原依赖 (注意路径前缀是 gemini-src)
+      - name: Restore NuGet packages
+        run: nuget restore gemini-src/src/Gemini.sln
+
+      # 5. 执行编译
+      - name: Build solution
+        run: |
+          msbuild gemini-src/src/Gemini.sln `
+            /p:Configuration=Release `
+            /p:Platform="Any CPU"
+
+      # 6. 打包并上传生成的 EXE 文件
+      # 根据 Gemini 项目结构，Demo 项目通常在 Gemini.Demo 文件夹下
+      - name: Upload Demo EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: Gemini-Demo-Binary
+          path: |
+            gemini-src/src/Gemini.Demo/bin/Release/**
+            !gemini-src/src/Gemini.Demo/bin/Release/**/*.pdb
